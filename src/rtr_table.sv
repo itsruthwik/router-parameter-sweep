@@ -1,15 +1,19 @@
 module routing_table #(
     parameter NUM_ROWS = 2,  
     parameter NUM_COLS = 2,  
-    // parameter NUM_OUTPUTS = 5, 
-    parameter ROUTE_WIDTH = 4,  //$clog2(NUM_OUTPUTS), // each line in rtr table = port number
+    parameter NOC_NUM_ENDPOINTS = 4,
+    parameter NUM_OUTPUTS = 5, 
+    parameter ROUTE_WIDTH,  //$clog2(NUM_OUTPUTS), // each line in rtr table = port number
     parameter RTR_ADDR_WIDTH = $clog2(NUM_ROWS * NUM_COLS)
 )(
     input  [RTR_ADDR_WIDTH - 1 : 0] router_address,  // {roi_id, col_id}
     // output logic [ROUTE_WIDTH - 1 : 0] routing_table [(NUM_ROWS * NUM_COLS) - 1:0] 
-    output logic [0: (NUM_ROWS * NUM_COLS)-1][ROUTE_WIDTH - 1 : 0]  routing_table
+
+    output logic [0: NOC_NUM_ENDPOINTS-1][ROUTE_WIDTH - 1 : 0]  routing_table
 
 );
+
+    // output logic [0: NOC_NUM_ENDPOINTS-1][ROUTE_WIDTH - 1 : 0]  routing_table;
 
     integer i, j;
 

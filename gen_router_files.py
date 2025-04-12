@@ -17,13 +17,13 @@ def generate_router_configs():
     # Define parameter values to sweep
     param_configs = {
         'NUM_PORTS': [5],
-        'NOC_NUM_ENDPOINTS': [4, 9, 16],
-        'FLIT_BUFFER_DEPTH': [1, 2, 4, 8],
-        'SERDES_BUFFER_DEPTH': [1, 2, 4, 8],
+        'NOC_NUM_ENDPOINTS': [16],
+        'FLIT_BUFFER_DEPTH': [8],
+        'SERDES_BUFFER_DEPTH': [8],
         'TID_WIDTH': [2],
-        'TDATA_WIDTH': [32, 64, 128],
+        'TDATA_WIDTH': [32, 64, 128, 256],
         'SERIALIZATION_FACTOR': [1],
-        'CLKCROSS_FACTOR': [1],
+        'CLKCROSS_FACTOR': [2],
         'SINGLE_CLOCK': [0]
     }
     
@@ -44,8 +44,10 @@ def generate_router_configs():
     core_combinations = list(itertools.product(*core_params.values()))
     
     # Generate optional parameter combinations
+    # Add to either core_params or opt_params
     opt_params = {
         'TDATA_WIDTH': param_configs['TDATA_WIDTH'],
+        'SERIALIZATION_FACTOR': param_configs['SERIALIZATION_FACTOR'], 
         'SINGLE_CLOCK': param_configs['SINGLE_CLOCK']
     }
     
@@ -70,7 +72,8 @@ def generate_router_configs():
             # Map values to parameter names
             opt_values = {
                 'TDATA_WIDTH': opt_combo[0],
-                'SINGLE_CLOCK': opt_combo[1]
+                'SERIALIZATION_FACTOR': opt_combo[1],
+                'SINGLE_CLOCK': opt_combo[2]
             }
             
             # Combine the parameter values
@@ -93,7 +96,7 @@ def generate_router_configs():
                         modified_content = pattern.join([parts[0], f"{value},{value_part[1]}"])
             
             # Generate descriptive filename
-            filename = f"router_wrap_NE{params['NOC_NUM_ENDPOINTS']}_FB{params['FLIT_BUFFER_DEPTH']}_SB{params['SERDES_BUFFER_DEPTH']}_TD{params['TDATA_WIDTH']}_SC{params['SINGLE_CLOCK']}.sv"
+            filename = f"router_wrap_NE{params['NOC_NUM_ENDPOINTS']}_FB{params['FLIT_BUFFER_DEPTH']}_SB{params['SERDES_BUFFER_DEPTH']}_TD{params['TDATA_WIDTH']}_SF{params['SERIALIZATION_FACTOR']}_SC{params['SINGLE_CLOCK']}.sv"
             output_path = output_dir / filename
             
             # Write modified content to file

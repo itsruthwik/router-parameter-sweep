@@ -276,12 +276,19 @@ module axis_router #(
         assign credit_in_combined[0] = local_credit_in;
         // assign local_credit_in  =  credit_out_combined[NUM_PORTS - 1];
     endgenerate
-
     logic [NOC_NUM_ENDPOINTS - 1:0][ROUTE_WIDTH - 1 : 0] routing_table ;
 
+
+localparam RT_NUM_ROWS = (NOC_NUM_ENDPOINTS == 4) ? 2 :
+                         (NOC_NUM_ENDPOINTS == 9) ? 3 :
+                         (NOC_NUM_ENDPOINTS == 16) ? 4 : 
+                         (NOC_NUM_ENDPOINTS); // fallback for other cases
+
+//  $rtoi($sqrt(NOC_NUM_ENDPOINTS))
 routing_table #(
-    .NUM_ROWS(2),  
-    .NUM_COLS(2),  
+    .NUM_ROWS( RT_NUM_ROWS),  
+    .NUM_COLS( RT_NUM_ROWS),  
+    .NOC_NUM_ENDPOINTS(NOC_NUM_ENDPOINTS),
     .NUM_OUTPUTS(NUM_PORTS), 
     .ROUTE_WIDTH(ROUTE_WIDTH),
     .RTR_ADDR_WIDTH(RTR_ADDR_WIDTH)
@@ -323,9 +330,4 @@ routing_table #(
         .DISABLE_TURNS  (DISABLE_TURNS)
     );
 
-endmodule: router_wrap
-
-
-
-
-
+endmodule: axis_router
